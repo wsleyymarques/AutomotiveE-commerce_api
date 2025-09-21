@@ -1,29 +1,34 @@
-const AWS = require("aws-sdk");
+// config/s3.js
+const { S3Client } = require("@aws-sdk/client-s3");
+const { Upload } = require("@aws-sdk/lib-storage");
 const multer = require("multer");
-const multerS3 = require("multer-s3");
 
-AWS.config.update({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+
+const s3Client = new S3Client({
     region: process.env.AWS_REGION,
+    credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    },
 });
 
-const s3 = new AWS.S3();
-
-const upload = multer({
-    storage: multerS3({
-        s3,
-        bucket: process.env.AWS_BUCKET_NAME,
-        acl: "public-read",
-        metadata: function (req, file, cb) {
-            cb(null, { fieldName: file.fieldname });
+async function uploadToS3(file) {
+    const key = `products/${Date.now()}_${file.originalname}`;
+    const parallelUpload = new Upload({
+        client: s3Client,
+        params: {
+            Bucket: process.env.AWS_BUCKET_NAME,
+            Key: key,
+            Body: file.buffer,
+            ContentType: file.mimetype,
         },
-        key: function (req, file, cb) {
-            const timestamp = Date.now().toString();
-            const fileName = `${timestamp}-${file.originalname}`;
-            cb(null, fileName);
-        },
-    }),
-});
+    });
 
-module.exports = upload;
+    await parallelUpload.done();
+
+    return `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
+}
+
+module.exports = { upload, uploadToS3 };

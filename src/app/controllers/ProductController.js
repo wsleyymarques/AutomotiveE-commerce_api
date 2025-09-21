@@ -1,12 +1,14 @@
 // src/app/controllers/ProductController.js
 const productService = require("../services/ProductService");
-const upload = require("../../config/s3");
-
+const { upload, uploadToS3 } = require("../../config/s3");
 class ProductController {
     async list(req, res) {
         try {
-            const { page, limit } = req.query;
-            const products = await productService.list({ page: Number(page), limit: Number(limit) });
+            const { page = 1, limit = 10 } = req.query;
+            const products = await productService.list({
+                page: Number(page),
+                limit: Number(limit)
+            });
             return res.json(products);
         } catch (err) {
             return res.status(500).json({ error: err.message });
@@ -26,15 +28,13 @@ class ProductController {
     async create(req, res) {
         try {
             const { name, code, price } = req.body;
-            const imageUrl = req.file ? req.file.location : null;
+            let imageUrl = null;
 
-            const product = await productService.create({
-                name,
-                code,
-                price,
-                imageUrl,
-            });
+            if (req.file) {
+                imageUrl = await uploadToS3(req.file);
+            }
 
+            const product = await productService.create({ name, code, price, imageUrl });
             return res.status(201).json(product);
         } catch (err) {
             return res.status(err.status || 500).json({ error: err.message });
