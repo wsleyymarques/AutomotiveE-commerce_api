@@ -2,6 +2,12 @@ const productRepository = require("../repositories/ProductRepository");
 
 class ProductService {
     async list({ page = 1, limit = 10 }) {
+        page = Number(page);
+        limit = Number(limit);
+
+        if (isNaN(page) || page < 1) page = 1;
+        if (isNaN(limit) || limit < 1) limit = 10;
+
         const offset = (page - 1) * limit;
 
         const products = await productRepository.findAll({
@@ -12,7 +18,6 @@ class ProductService {
 
         return products;
     }
-
     async search(term) {
         if (!term) return [];
         const products = await productRepository.findByNameOrCode(term);
