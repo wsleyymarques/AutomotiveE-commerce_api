@@ -25,6 +25,7 @@ class UserService {
             email: user.email,
         };
     }
+    
 
     async login({ email, password }) {
         const user = await userRepository.findByEmail(email);
