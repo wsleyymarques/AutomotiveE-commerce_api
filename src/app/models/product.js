@@ -1,4 +1,3 @@
-// models/product.js
 'use strict';
 const { Model } = require('sequelize');
 

@@ -3,6 +3,16 @@ const jwt = require("jsonwebtoken");
 const userRepository = require("../repositories/UserRepository");
 
 class UserService {
+
+    _generateToken(user) {
+        return jwt.sign(
+            { id: user.id, email: user.email },
+            process.env.JWT_SECRET,
+            { expiresIn: "1h" }
+        );
+    }
+
+
     async register({ name, email, password }) {
         const existingUser = await userRepository.findByEmail(email);
         if (existingUser) {
@@ -19,13 +29,17 @@ class UserService {
             password_hash,
         });
 
+        const token = this._generateToken(user);
+
         return {
-            id: user.id,
-            name: user.name,
-            email: user.email,
+            token,
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+            },
         };
     }
-    
 
     async login({ email, password }) {
         const user = await userRepository.findByEmail(email);
@@ -42,11 +56,7 @@ class UserService {
             throw err;
         }
 
-        const token = jwt.sign(
-            { id: user.id, email: user.email },
-            process.env.JWT_SECRET,
-            { expiresIn: "1h" }
-        );
+        const token = this._generateToken(user);
 
         return {
             token,
