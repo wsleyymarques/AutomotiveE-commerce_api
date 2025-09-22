@@ -1,5 +1,6 @@
 const BaseRepository = require("./BaseRepository");
 const { Product } = require("../models");
+const { Op } = require("sequelize");
 
 class ProductRepository extends BaseRepository {
     constructor() {
@@ -7,11 +8,13 @@ class ProductRepository extends BaseRepository {
     }
 
     async findByNameOrCode(term) {
+        console.log(`[REPOSITORY] Executando consulta no MySQL para o termo: "${term}"`);
+
         return this.model.findAll({
             where: {
-                [Product.sequelize.Op.or]: [
-                    { name: { [Product.sequelize.Op.like]: `%${term}%` } },
-                    { code: { [Product.sequelize.Op.like]: `%${term}%` } },
+                [Op.or]: [
+                    { name: { [Op.like]: `%${term}%` } },
+                    { code: { [Op.like]: `%${term}%` } },
                 ],
             },
         });

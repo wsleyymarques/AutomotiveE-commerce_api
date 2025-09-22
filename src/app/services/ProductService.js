@@ -6,19 +6,30 @@ class ProductService {
         limit = Number(limit);
 
         if (isNaN(page) || page < 1) page = 1;
-        if (isNaN(limit) || limit < 1) limit = 10;
+        if (isNaN(limit) || limit < 1 || limit > 100) limit = 10;
 
         const offset = (page - 1) * limit;
 
-        const products = await productRepository.findAll({
+        const { count, rows } = await productRepository.model.findAndCountAll({
             offset,
             limit,
             order: [["createdAt", "DESC"]],
         });
 
-        return products;
+        const totalPages = Math.ceil(count / limit);
+
+        return {
+            products: rows,
+            pagination: {
+                totalItems: count,
+                totalPages,
+                currentPage: page,
+            }
+        };
     }
+
     async search(term) {
+        console.log(`[SERVICE] Serviço de busca chamado com o termo: "${term}"`);
         if (!term) return [];
         const products = await productRepository.findByNameOrCode(term);
         return products;

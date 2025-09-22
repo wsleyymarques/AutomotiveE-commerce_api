@@ -19,16 +19,31 @@ class CartService {
         return cartRepository.create({ userId, productId, quantity });
     }
 
-    async updateItem(id, quantity) {
-        const item = await cartRepository.findById(id);
-        if (!item) throw new Error('Item não encontrado');
-        return cartRepository.update(id, { quantity });
+    async updateItem(id, userId, quantity) {
+        const item = await cartRepository.model.findOne({ where: { id, userId } });
+
+        if (!item) {
+            const err = new Error('Item não encontrado ou não pertence ao usuário');
+            err.status = 404;
+            throw err;
+        }
+
+        item.quantity = quantity;
+        await item.save();
+        return item;
     }
 
-    async removeItem(id) {
-        const item = await cartRepository.findById(id);
-        if (!item) throw new Error('Item não encontrado');
-        return cartRepository.delete(id);
+    async removeItem(id, userId) {
+        const item = await cartRepository.model.findOne({ where: { id, userId } });
+
+        if (!item) {
+            const err = new Error('Item não encontrado ou não pertence ao usuário');
+            err.status = 404;
+            throw err;
+        }
+
+        await item.destroy();
+        return true;
     }
 }
 
