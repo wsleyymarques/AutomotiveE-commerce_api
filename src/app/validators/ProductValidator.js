@@ -8,28 +8,41 @@ const validate = (req, res, next) => {
     return res.status(400).json({ errors: errors.array() });
 };
 
-const addItemRules = () => [
-    body('productId')
+const createProductRules = () => [
+    body('name')
+        .trim()
+        .notEmpty().withMessage('O nome é obrigatório.'),
+    body('code')
+        .trim()
+        .notEmpty().withMessage('O código é obrigatório.'),
+    body('price')
+        .isFloat({ gt: 0 }).withMessage('O preço deve ser um número maior que zero.'),
+];
+
+const updateProductRules = () => [
+    param('id')
         .isInt({ min: 1 }).withMessage('O ID do produto é inválido.'),
-    body('quantity')
-        .isInt({ min: 1 }).withMessage('A quantidade deve ser um número inteiro maior que zero.'),
+    body('name')
+        .optional()
+        .trim()
+        .notEmpty().withMessage('O nome não pode ser vazio.'),
+    body('code')
+        .optional()
+        .trim()
+        .notEmpty().withMessage('O código não pode ser vazio.'),
+    body('price')
+        .optional()
+        .isFloat({ gt: 0 }).withMessage('O preço, se fornecido, deve ser maior que zero.'),
 ];
 
-const updateItemRules = () => [
+const validateIdParam = () => [
     param('id')
-        .isInt({ min: 1 }).withMessage('O ID do item no carrinho é inválido.'),
-    body('quantity')
-        .isInt({ min: 1 }).withMessage('A quantidade deve ser um número inteiro maior que zero.'),
-];
-
-const removeItemRules = () => [
-    param('id')
-        .isInt({ min: 1 }).withMessage('O ID do item no carrinho é inválido.'),
+        .isInt({ min: 1 }).withMessage('O ID do produto na URL é inválido.'),
 ];
 
 module.exports = {
     validate,
-    addItemRules,
-    updateItemRules,
-    removeItemRules,
+    createProductRules,
+    updateProductRules,
+    validateIdParam,
 };
