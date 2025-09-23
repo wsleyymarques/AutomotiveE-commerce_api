@@ -96,6 +96,27 @@ Para acessar, basta rodar o servidor e abrir no navegador:
 
 ---
 
+## 🌐 Frontend Conectado
+
+Este backend já está totalmente conectado com o repositório do frontend:
+
+[Automotive E-commerce Web](https://github.com/wsleyymarques/AutomotiveE-commerce_web)
+
+O frontend foi construído em **React + Vite** e consome diretamente esta API, permitindo testar todo o fluxo (login, listagem de produtos, carrinho, etc.).
+
+---
+
+## ▶️ Como Rodar o Projeto
+
+Após configurar o `.env` e subir o banco de dados com Docker Compose, basta instalar as dependências e iniciar o servidor com:
+
+```bash
+npm install
+npm run dev
+```
+
+O servidor será iniciado na porta **3333** por padrão.
+
 ## 📋 Sobre Este Projeto (Vaga – PARTE 2)
 
 Este repositório foi desenvolvido especificamente para atender aos requisitos da vaga (PARTE 2: Implementação Prática – mini e-commerce de peças automotivas). Abaixo listo os itens solicitados e como foram atendidos:
