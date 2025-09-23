@@ -86,7 +86,36 @@ curl -X POST http://localhost:3333/api/products \
 -F "price=55.70" \
 -F "image=@/caminho/para/arquivo.jpg"
 
+## 📖 Documentação da API (Swagger)
+
+Este projeto conta com uma documentação interativa feita com **Swagger**, onde é possível visualizar e testar todos os endpoints diretamente pelo navegador.
+
+Para acessar, basta rodar o servidor e abrir no navegador:
+
+[http://localhost:3333/api-docs/](http://localhost:3333/api-docs/)
+
 ---
+
+## 🌐 Frontend Conectado
+
+Este backend já está totalmente conectado com o repositório do frontend:
+
+[Automotive E-commerce Web](https://github.com/wsleyymarques/AutomotiveE-commerce_web)
+
+O frontend foi construído em **React + Vite** e consome diretamente esta API, permitindo testar todo o fluxo (login, listagem de produtos, carrinho, etc.).
+
+---
+
+## ▶️ Como Rodar o Projeto
+
+Após configurar o `.env` e subir o banco de dados com Docker Compose, basta instalar as dependências e iniciar o servidor com:
+
+```bash
+npm install
+npm run dev
+```
+
+O servidor será iniciado na porta **3333** por padrão.
 
 ## 📋 Sobre Este Projeto (Vaga – PARTE 2)
 
