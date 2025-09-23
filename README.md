@@ -86,6 +86,14 @@ curl -X POST http://localhost:3333/api/products \
 -F "price=55.70" \
 -F "image=@/caminho/para/arquivo.jpg"
 
+## 📖 Documentação da API (Swagger)
+
+Este projeto conta com uma documentação interativa feita com **Swagger**, onde é possível visualizar e testar todos os endpoints diretamente pelo navegador.
+
+Para acessar, basta rodar o servidor e abrir no navegador:
+
+[http://localhost:3333/api-docs/](http://localhost:3333/api-docs/)
+
 ---
 
 ## 📋 Sobre Este Projeto (Vaga – PARTE 2)
